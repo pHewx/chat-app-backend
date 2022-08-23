@@ -2,14 +2,14 @@ const express = require("express");
 const dotenv = require("dotenv");
 const app = express();
 const db = require("../src/config/db");
+const routes = require("./routes");
 
 // Config
 dotenv.config();
 db.connect();
 
-app.get("/", (req, res) => {
-  res.json("helloo");
-});
+// Routes
+routes(app);
 
 const PORT = process.env.PORT || 4000;
 
