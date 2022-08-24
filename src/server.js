@@ -8,6 +8,8 @@ const routes = require("./routes");
 dotenv.config();
 db.connect();
 
+app.use(express.json());
+
 // Routes
 routes(app);
 
