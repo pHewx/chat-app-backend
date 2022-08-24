@@ -41,7 +41,7 @@ const getAllUser = (req, res, next) => {
   res.json("hello");
 };
 
-const authUser = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email: email });
@@ -61,4 +61,13 @@ const authUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, authUser, getAllUser };
+const uploadUserImage = (req, res, next) => {
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+
+  res.json({ secure_url: req.file.path });
+};
+
+module.exports = { registerUser, loginUser, getAllUser, uploadUserImage };
