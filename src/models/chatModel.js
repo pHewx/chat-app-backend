@@ -1,5 +1,6 @@
-const mongoose = require("mongooses");
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const userSchema = require("./userModel").schema;
 
 const chatSchema = new Schema(
   {
@@ -11,14 +12,12 @@ const chatSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-    },
+    users: [{ type: Object }],
     latestMessage: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Object,
     },
     groupAdmin: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Object,
     },
   },
   {
