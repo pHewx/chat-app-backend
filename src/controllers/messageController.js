@@ -29,17 +29,20 @@ const sendMessage = async (req, res, next) => {
   try {
     const chat = await Chat.findById(req.body.chatId);
 
-    const message = await new Message({
+    const message = await Message.create({
       sender: req.user,
       content: req.body.content,
       chat,
     });
 
-    await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
+    await Chat.updateOne(
+      { _id: req.body.chatId },
+      { latestMessage: { sender: message.sender, content: message.content } }
+    );
 
-    await message.save();
     res.status(200).json(message);
   } catch (error) {
+    console.log(error);
     res.status(400);
     next(error);
   }

@@ -6,6 +6,7 @@ const token = require("../utils/token");
 //@access          Public
 const registerUser = async (req, res, next) => {
   const { name, email, password, pic } = req.body;
+  console.log(pic);
 
   if (!name || !email || !password) {
     const error = new Error("Please Enter all the Feilds");
@@ -105,19 +106,9 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-const uploadUserImage = (req, res, next) => {
-  if (!req.file) {
-    next(new Error("No file uploaded!"));
-    return;
-  }
-
-  res.json({ secure_url: req.file.path }).find({ id: { $ne: req.user._id } });
-};
-
 module.exports = {
   registerUser,
   loginUser,
   getAllUser,
-  uploadUserImage,
   getUserById,
 };
