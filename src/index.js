@@ -9,13 +9,8 @@ const cors = require("cors");
 dotenv.config();
 db.connect();
 
-app.use(
-  cors({
-    credentials: true,
-    origin: ["http://localhost:3000"],
-  })
-);
 app.use(express.json());
+app.use(cors());
 
 // Routes
 routes(app);
@@ -29,8 +24,8 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
-    // credentials: true,
+    credentials: true,
+    origin: "https://chat-app-fake.netlify.app",
   },
 });
 

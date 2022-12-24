@@ -1,16 +1,16 @@
 const User = require("../models/userModel");
 const token = require("../utils/token");
+const asyncHandler = require("express-async-handler");
 
 //@description     Register new user
 //@route           POST /api/user/
 //@access          Public
-const registerUser = async (req, res, next) => {
+const registerUser = asyncHandler(async (req, res, next) => {
   const { name, email, password, pic } = req.body;
-  console.log(pic);
 
   if (!name || !email || !password) {
-    const error = new Error("Please Enter all the Feilds");
-    next(error);
+    res.status(400);
+    throw new Error("Please Enter all the Feilds");
   }
 
   const userExists = await User.findOne({ email: email });
@@ -40,33 +40,29 @@ const registerUser = async (req, res, next) => {
     res.status(400);
     throw new Error("User not found");
   }
-};
+});
 
-const getAllUser = async (req, res, next) => {
-  try {
-    const keyword = req.query.search
-      ? {
-          $or: [
-            { name: { $regex: req.query.search, $options: "i" } },
-            { email: { $regex: req.query.search, $options: "i" } },
-          ],
-        }
-      : {};
+const getAllUser = asyncHandler(async (req, res, next) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
 
-    const user = await User.find(keyword)
-      .find({ _id: { $ne: req.user._id } })
-      .select("-password");
+  const user = await User.find(keyword)
+    .find({ _id: { $ne: req.user._id } })
+    .select("-password");
 
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
-};
+  res.json(user);
+});
 
 //@description     Auth the user
 //@route           POST /api/users/login
 //@access          Public
-const loginUser = async (req, res, next) => {
+const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -84,7 +80,7 @@ const loginUser = async (req, res, next) => {
     res.status(401);
     throw new Error("Invalid Email or Password");
   }
-};
+});
 
 const getUserById = async (req, res, next) => {
   if (!req.params.id) {
