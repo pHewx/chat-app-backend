@@ -100,7 +100,9 @@ const leaveGroup = asyncHandler(async (req, res) => {
   );
 
   if (removed) {
-    removed.groupAdmin = removed.users[0];
+    if (removed.groupAdmin._id == req.user._id) {
+      removed.groupAdmin = removed.users[0];
+    }
     await removed.save();
     res.status(200).json(removed);
   } else {
@@ -116,7 +118,9 @@ const updateGroup = asyncHandler(async (req, res) => {
   var { name, users } = req.body;
   const chatId = req.params.id;
 
-  if (req.user._id != chatId.groupAdmin._id) {
+  const chat = await Chat.findById(chatId);
+
+  if (req.user._id.toString() !== chat.groupAdmin._id.toString()) {
     res.status(400);
     throw new Error("Only admin can edit group");
   }
@@ -144,7 +148,6 @@ const updateGroup = asyncHandler(async (req, res) => {
 
   if (updated) {
     await updated.save();
-
     res.status(200).json(updated);
   } else {
     res.status(400);
